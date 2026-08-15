@@ -28,7 +28,7 @@ import {
     TEXT_OPTIONS,
     TRIANGLE_OPTIONS,
 } from "../types";
-import { isTextType } from "../utils";
+import { createFilter, isTextType } from "../utils";
 import { useCanvasEvents } from "./use-canvas-events";
 
 const buildEditor = ({
@@ -64,6 +64,20 @@ const buildEditor = ({
     };
 
     return {
+        changeImageFilter: (value: string) => {
+            const objects = canvas.getActiveObjects();
+
+            objects.forEach((object) => {
+                if (object instanceof FabricImage) {
+                    const effect = createFilter(value);
+
+                    object.filters = effect ? [effect] : [];
+                    object.applyFilters();
+                }
+            });
+
+            canvas.requestRenderAll();
+        },
         addImage: async (value: string) => {
             const image = await FabricImage.fromURL(value, {
                 crossOrigin: "anonymous",
