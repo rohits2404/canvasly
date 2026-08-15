@@ -1,7 +1,16 @@
 import { Canvas, FabricObject, Rect, Shadow } from "fabric";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useAutoResize } from "./use-auto-resize";
 
 export const useEditor = () => {
+    const [canvas, setCanvas] = useState<Canvas | null>(null);
+    const [container, setContainer] = useState<HTMLDivElement | null>(null);
+
+    useAutoResize({
+        canvas,
+        container,
+    });
+
     const init = useCallback(
         ({
             initialCanvas,
@@ -33,11 +42,6 @@ export const useEditor = () => {
                 }),
             });
 
-            initialCanvas.setDimensions({
-                width: initialContainer.offsetWidth,
-                height: initialContainer.offsetHeight,
-            });
-
             initialCanvas.add(initialWorkspace);
             initialCanvas.centerObject(initialWorkspace);
             initialCanvas.clipPath = initialWorkspace;
@@ -50,6 +54,9 @@ export const useEditor = () => {
 
             initialCanvas.add(test);
             initialCanvas.centerObject(test);
+
+            setCanvas(initialCanvas);
+            setContainer(initialContainer);
         },
         [],
     );
