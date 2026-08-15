@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -9,6 +10,9 @@ export const metadata: Metadata = {
     title: "Canvasly",
     description:
         "Create stunning designs, presentations, social posts, and more with Canvasly, a simple and powerful online design editor.",
+    icons: {
+        icon: "/logo.svg",
+    },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -22,7 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 inter.className,
             )}
         >
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body className="min-h-full flex flex-col">
+                <TooltipProvider>{children}</TooltipProvider>
+            </body>
         </html>
     );
 }
