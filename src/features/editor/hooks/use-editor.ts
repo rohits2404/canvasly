@@ -56,6 +56,32 @@ const buildEditor = ({
     };
 
     return {
+        bringForward: () => {
+            canvas.getActiveObjects().forEach((object) => {
+                canvas.bringObjectForward(object);
+            });
+
+            const workspace = getWorkspace();
+
+            if (workspace) {
+                canvas.sendObjectToBack(workspace);
+            }
+
+            canvas.requestRenderAll();
+        },
+        sendBackwards: () => {
+            canvas.getActiveObjects().forEach((object) => {
+                canvas.sendObjectBackwards(object);
+            });
+
+            const workspace = getWorkspace();
+
+            if (workspace) {
+                canvas.sendObjectToBack(workspace);
+            }
+
+            canvas.requestRenderAll();
+        },
         changeFillColor: (value: string) => {
             setFillColor(value);
             canvas.getActiveObjects().forEach((object) => {
