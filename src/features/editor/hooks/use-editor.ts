@@ -3,6 +3,7 @@ import {
     Circle,
     FabricImage,
     FabricObject,
+    PencilBrush,
     Polygon,
     Rect,
     Shadow,
@@ -67,6 +68,22 @@ const buildEditor = ({
     };
 
     return {
+        enableDrawingMode: () => {
+            canvas.discardActiveObject();
+            canvas.requestRenderAll();
+
+            canvas.isDrawingMode = true;
+
+            if (!canvas.freeDrawingBrush) {
+                canvas.freeDrawingBrush = new PencilBrush(canvas);
+            }
+
+            canvas.freeDrawingBrush.width = strokeWidth;
+            canvas.freeDrawingBrush.color = strokeColor;
+        },
+        disableDrawingMode: () => {
+            canvas.isDrawingMode = false;
+        },
         onCopy: () => copy(),
         onPaste: () => paste(),
         changeImageFilter: (value: string) => {
@@ -286,14 +303,23 @@ const buildEditor = ({
 
                 object.set({ stroke: value });
             });
+            if (canvas.freeDrawingBrush) {
+                canvas.freeDrawingBrush.color = value;
+            }
             canvas.renderAll();
         },
         changeStrokeWidth: (value: number) => {
             setStrokeWidth(value);
+
             canvas.getActiveObjects().forEach((object) => {
                 object.set({ strokeWidth: value });
             });
-            canvas.renderAll();
+
+            if (canvas.freeDrawingBrush) {
+                canvas.freeDrawingBrush.width = value;
+            }
+
+            canvas.requestRenderAll();
         },
         changeStrokeDashArray: (value: number[]) => {
             setStrokeDashArray(value);
