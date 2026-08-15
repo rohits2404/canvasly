@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { Hint } from "@/components/hint";
 import { ActiveTool, Editor } from "../types";
 import { cn } from "@/lib/utils";
+import { useFilePicker } from "use-file-picker";
 
 interface NavbarProps {
     editor: Editor | undefined;
@@ -33,6 +34,20 @@ export const Navbar = ({
     activeTool,
     onChangeActiveTool,
 }: NavbarProps) => {
+    const { openFilePicker } = useFilePicker({
+        accept: ".json",
+        onFilesSuccessfullySelected: ({ plainFiles }: any) => {
+            if (plainFiles && plainFiles.length > 0) {
+                const file = plainFiles[0];
+                const reader = new FileReader();
+                reader.readAsText(file, "UTF-8");
+                reader.onload = () => {
+                    editor?.loadJson(reader.result as string);
+                };
+            }
+        },
+    });
+
     return (
         <nav className="w-full flex items-center p-4 h-17 gap-x-8 border-b lg:pl-8.5">
             <Logo />
@@ -46,7 +61,7 @@ export const Navbar = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start" className="min-w-60">
                         <DropdownMenuItem
-                            onClick={() => {}} // TODO: Add functionality
+                            onClick={() => openFilePicker()}
                             className="flex items-center gap-x-2"
                         >
                             <CiFileOn className="size-8" />
@@ -106,7 +121,7 @@ export const Navbar = ({
                         <DropdownMenuContent align="end" className="min-w-60">
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
-                                onClick={() => {}} // TODO: Add functionality
+                                onClick={() => editor?.saveJson()}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -118,7 +133,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
-                                onClick={() => {}} // TODO: Add functionality
+                                onClick={() => editor?.savePng()}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -130,7 +145,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
-                                onClick={() => {}} // TODO: Add functionality
+                                onClick={() => editor?.saveJpg()}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>
@@ -142,7 +157,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                             <DropdownMenuItem
                                 className="flex items-center gap-x-2"
-                                onClick={() => {}} // TODO: Add functionality
+                                onClick={() => editor?.saveSvg()}
                             >
                                 <CiFileOn className="size-8" />
                                 <div>

@@ -1,5 +1,6 @@
 import { Canvas } from "fabric";
 import { useCallback, useRef, useState } from "react";
+import { JSON_KEYS } from "../types";
 
 interface UseHistoryProps {
     canvas: Canvas | null;
@@ -22,7 +23,7 @@ export const useHistory = ({ canvas }: UseHistoryProps) => {
         (skip = false) => {
             if (!canvas) return;
 
-            const currentState = canvas.toJSON();
+            const currentState = canvas.toObject(JSON_KEYS);
             const json = JSON.stringify(currentState);
 
             if (!skip && !skipSave.current) {
