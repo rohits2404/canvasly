@@ -18,6 +18,7 @@ import {
     EditorHookProps,
     FILL_COLOR,
     FONT_FAMILY,
+    FONT_SIZE,
     FONT_WEIGHT,
     RECTANGLE_OPTIONS,
     STROKE_COLOR,
@@ -89,6 +90,25 @@ const buildEditor = ({
                 }
             });
             canvas.renderAll();
+        },
+        changeFontSize: (value: number) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if (isTextType(object.type)) {
+                    object.set({ fontSize: value });
+                }
+            });
+            canvas.renderAll();
+        },
+        getActiveFontSize: () => {
+            const selectedObject = selectedObjects[0];
+
+            if (!selectedObject) {
+                return FONT_SIZE;
+            }
+
+            const value = selectedObject.get("fontSize") || FONT_SIZE;
+
+            return value;
         },
         getActiveTextAlign: () => {
             const selectedObject = selectedObjects[0];
@@ -338,8 +358,6 @@ const buildEditor = ({
                 return FONT_WEIGHT;
             }
 
-            // @ts-ignore
-            // Faulty TS library, fontWeight exists.
             const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
 
             return value;

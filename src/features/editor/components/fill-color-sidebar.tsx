@@ -34,8 +34,8 @@ export const FillColorSidebar = ({
             )}
         >
             <ToolSidebarHeader
-                title="Fill color"
-                description="Add fill color to your element"
+                title="Fill Color"
+                description="Add Fill Color To Your Element"
             />
             <ScrollArea>
                 <div className="p-4 space-y-6">

@@ -31,7 +31,7 @@ export const FontSidebar = ({
         >
             <ToolSidebarHeader
                 title="Font"
-                description="Change the text font"
+                description="Change The Text Font"
             />
             <ScrollArea>
                 <div className="p-4 space-y-1 border-b">
