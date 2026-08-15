@@ -9,6 +9,7 @@ export const Logo = () => {
                     src="/logo.svg"
                     fill
                     alt="Image AI"
+                    priority
                     className="shrink-0 hover:opacity-75 transition"
                 />
             </div>

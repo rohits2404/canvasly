@@ -1,4 +1,6 @@
-import { ChromePicker, CirclePicker } from "react-color";
+"use client";
+
+import dynamic from "next/dynamic";
 import { rgbaObjectToString } from "../utils";
 import { colors } from "../types";
 
@@ -6,6 +8,16 @@ interface ColorPickerProps {
     value: string;
     onChange: (value: string) => void;
 }
+
+const ChromePicker = dynamic(
+    () => import("react-color").then((mod) => mod.ChromePicker),
+    { ssr: false },
+);
+
+const CirclePicker = dynamic(
+    () => import("react-color").then((mod) => mod.CirclePicker),
+    { ssr: false },
+);
 
 export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
     return (
@@ -18,6 +30,7 @@ export const ColorPicker = ({ value, onChange }: ColorPickerProps) => {
                 }}
                 className="border rounded-lg"
             />
+
             <CirclePicker
                 color={value}
                 colors={colors}
