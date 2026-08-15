@@ -10,6 +10,7 @@ import {
     ArrowDown,
     ArrowUp,
     ChevronDown,
+    Trash,
 } from "lucide-react";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { isTextType } from "../utils";
@@ -371,6 +372,17 @@ export const Toolbar = ({
                         )}
                     >
                         <RxTransparencyGrid className="size-4" />
+                    </Button>
+                </Hint>
+            </div>
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Delete" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => editor?.delete()}
+                        size="icon"
+                        variant="ghost"
+                    >
+                        <Trash className="size-4" />
                     </Button>
                 </Hint>
             </div>
