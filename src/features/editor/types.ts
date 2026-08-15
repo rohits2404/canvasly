@@ -1,6 +1,27 @@
 import { Canvas, FabricObject, TextboxProps } from "fabric";
 import material from "material-colors";
 
+export const fonts = [
+    "Arial",
+    "Arial Black",
+    "Verdana",
+    "Helvetica",
+    "Tahoma",
+    "Trebuchet MS",
+    "Times New Roman",
+    "Georgia",
+    "Garamond",
+    "Courier New",
+    "Brush Script MT",
+    "Palatino",
+    "Bookman",
+    "Comic Sans MS",
+    "Impact",
+    "Lucida Sans Unicode",
+    "Geneva",
+    "Lucida Console",
+];
+
 export const selectionDependentTools = [
     "fill",
     "font",
@@ -118,13 +139,17 @@ export type BuildEditorProps = {
     strokeWidth: number;
     selectedObjects: FabricObject[];
     strokeDashArray: number[];
+    fontFamily: string;
     setFillColor: (value: string) => void;
     setStrokeColor: (value: string) => void;
     setStrokeWidth: (value: number) => void;
     setStrokeDashArray: (value: number[]) => void;
+    setFontFamily: (value: string) => void;
 };
 
 export interface Editor {
+    getActiveFontFamily: () => string;
+    changeFontFamily: (value: string) => void;
     addText: (value: string, options?: Partial<TextboxProps>) => void;
     getActiveOpacity: () => number;
     changeOpacity: (value: number) => void;
