@@ -13,43 +13,42 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
         const width = container.offsetWidth;
         const height = container.offsetHeight;
 
-        if (canvas.getWidth() !== width || canvas.getHeight() !== height) {
-            canvas.setDimensions({
-                width,
-                height,
-            });
-        }
+        if (!width || !height) return;
 
-        const center = canvas.getVpCenter();
-
-        const zoomRatio = 0.85;
-
-        const localWorkspace = canvas
-            .getObjects()
-            .find((object) => object.name === "clip");
-
-        if (!localWorkspace) return;
-
-        const scale = util.findScaleToFit(localWorkspace, {
+        canvas.setDimensions({
             width,
             height,
         });
 
-        const zoom = zoomRatio * scale;
+        const workspace = canvas
+            .getObjects()
+            .find((object) => object.name === "clip");
 
+        if (!workspace) return;
+
+        const scale = util.findScaleToFit(workspace, {
+            width,
+            height,
+        });
+
+        const zoom = 0.85 * scale;
+
+        // Reset viewport
         canvas.setViewportTransform([...iMatrix] as TMat2D);
 
-        canvas.zoomToPoint(new Point(center.x, center.y), zoom);
+        // Zoom around viewport center
+        canvas.zoomToPoint(new Point(width / 2, height / 2), zoom);
 
-        const workspaceCenter = localWorkspace.getCenterPoint();
+        // Center workspace
+        const workspaceCenter = workspace.getCenterPoint();
 
         const viewportTransform = canvas.viewportTransform;
 
         viewportTransform[4] =
-            canvas.getWidth() / 2 - workspaceCenter.x * viewportTransform[0];
+            width / 2 - workspaceCenter.x * viewportTransform[0];
 
         viewportTransform[5] =
-            canvas.getHeight() / 2 - workspaceCenter.y * viewportTransform[3];
+            height / 2 - workspaceCenter.y * viewportTransform[3];
 
         canvas.setViewportTransform(viewportTransform);
 
@@ -65,6 +64,7 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
 
         resizeObserver.observe(container);
 
+        // Initial zoom
         autoZoom();
 
         return () => {
@@ -72,5 +72,7 @@ export const useAutoResize = ({ canvas, container }: UseAutoResizeProps) => {
         };
     }, [canvas, container, autoZoom]);
 
-    return { autoZoom };
+    return {
+        autoZoom,
+    };
 };
