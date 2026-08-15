@@ -166,7 +166,7 @@ export const Editor = () => {
                     >
                         <canvas ref={canvasRef} className="block" />
                     </div>
-                    <Footer />
+                    <Footer editor={editor} />
                 </main>
             </div>
         </div>

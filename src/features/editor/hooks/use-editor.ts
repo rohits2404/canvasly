@@ -4,6 +4,7 @@ import {
     FabricImage,
     FabricObject,
     PencilBrush,
+    Point,
     Polygon,
     Rect,
     Shadow,
@@ -69,6 +70,32 @@ const buildEditor = ({
     };
 
     return {
+        autoZoom,
+        zoomIn: () => {
+            let zoomRatio = canvas.getZoom();
+
+            zoomRatio += 0.05;
+
+            const center = canvas.getVpCenter();
+
+            canvas.zoomToPoint(
+                new Point(center.x, center.y),
+                zoomRatio > 1 ? 1 : zoomRatio,
+            );
+        },
+
+        zoomOut: () => {
+            let zoomRatio = canvas.getZoom();
+
+            zoomRatio -= 0.05;
+
+            const center = canvas.getVpCenter();
+
+            canvas.zoomToPoint(
+                new Point(center.x, center.y),
+                zoomRatio < 0.2 ? 0.2 : zoomRatio,
+            );
+        },
         getWorkspace,
         changeSize: (value: { width: number; height: number }) => {
             const workspace = getWorkspace();
