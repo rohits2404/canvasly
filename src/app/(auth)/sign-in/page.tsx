@@ -1,12 +1,12 @@
-import { auth } from "@/auth";
 import { SignInCard } from "@/features/auth/components/sign-in-card";
+import { getCurrentUser } from "@/features/auth/utils";
 import { redirect } from "next/navigation";
 import React from "react";
 
 const SignInPage = async () => {
-    const session = await auth();
+    const user = await getCurrentUser();
 
-    if (session) {
+    if (user) {
         redirect("/");
     }
 
