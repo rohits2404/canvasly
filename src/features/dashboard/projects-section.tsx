@@ -22,14 +22,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useDuplicateProject } from "../projects/api/use-duplicate-project";
+import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteProject } from "../projects/api/use-delete-project";
 
 export const ProjectsSection = () => {
+    const [ConfirmDialog, confirm] = useConfirm(
+        "Are You Sure?",
+        "You Are About To Delete This Project.",
+    );
+
     const duplicateMutation = useDuplicateProject();
+    const removeMutation = useDeleteProject();
 
     const router = useRouter();
 
     const onCopy = (id: string) => {
         duplicateMutation.mutate({ id });
+    };
+
+    const onDelete = async (id: string) => {
+        const ok = await confirm();
+
+        if (ok) {
+            removeMutation.mutate({ id });
+        }
     };
 
     const { data, status, fetchNextPage, isFetchingNextPage, hasNextPage } =
@@ -76,6 +92,7 @@ export const ProjectsSection = () => {
 
     return (
         <div className="space-y-4">
+            <ConfirmDialog />
             <h3 className="font-semibold text-lg">Recent Projects</h3>
             <Table>
                 <TableBody>
@@ -142,8 +159,12 @@ export const ProjectsSection = () => {
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     className="h-10 cursor-pointer"
-                                                    disabled={false}
-                                                    onClick={() => {}}
+                                                    disabled={
+                                                        removeMutation.isPending
+                                                    }
+                                                    onClick={() =>
+                                                        onDelete(project.id)
+                                                    }
                                                 >
                                                     <Trash className="size-4 mr-2" />
                                                     Delete
