@@ -1,4 +1,4 @@
-import { Context, Hono } from "hono";
+import { Hono } from "hono";
 import { handle } from "hono/vercel";
 
 import images from "./images";
@@ -8,9 +8,9 @@ import users from "./users";
 import { AuthConfig, initAuthConfig } from "@hono/auth-js";
 import { authConfig } from "@/auth.config";
 
-function getAuthConfig(c: Context): AuthConfig {
+function getAuthConfig(): AuthConfig {
     return {
-        secret: c.env.AUTH_SECRET,
+        secret: process.env.AUTH_SECRET,
         ...authConfig,
     };
 }

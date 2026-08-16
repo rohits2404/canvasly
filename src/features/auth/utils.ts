@@ -21,7 +21,19 @@ export const getCurrentUser = async () => {
 };
 
 export const protectServer = async () => {
-    const user = await getCurrentUser();
+    const session = await auth();
+
+    if (!session?.user?.id) {
+        redirect("/sign-in");
+    }
+
+    const result = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, session.user.id))
+        .limit(1);
+
+    const user = result[0] ?? null;
 
     if (!user) {
         redirect("/sign-in");

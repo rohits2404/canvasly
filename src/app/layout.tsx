@@ -4,8 +4,13 @@ import "./globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
+const inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-sans",
+});
 
 export const metadata: Metadata = {
     title: "Canvasly",
@@ -16,14 +21,18 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+    const session = await auth();
+
     return (
         <html lang="en">
             <body className={inter.className}>
-                <Providers>
-                    <Toaster />
-                    <TooltipProvider>{children}</TooltipProvider>
-                </Providers>
+                <SessionProvider session={session}>
+                    <Providers>
+                        <Toaster />
+                        <TooltipProvider>{children}</TooltipProvider>
+                    </Providers>
+                </SessionProvider>
             </body>
         </html>
     );

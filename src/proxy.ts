@@ -1,1 +1,9 @@
-export { auth as proxy } from "@/auth";
+import { auth } from "@/auth";
+
+export default auth;
+
+export const config = {
+    matcher: [
+        "/((?!api/auth|api|_next/static|_next/image|favicon.ico|sign-in|sign-up).*)",
+    ],
+};

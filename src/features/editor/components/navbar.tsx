@@ -22,6 +22,7 @@ import { Hint } from "@/components/hint";
 import { ActiveTool, Editor } from "../types";
 import { cn } from "@/lib/utils";
 import { useFilePicker } from "use-file-picker";
+import { UserButton } from "@/features/auth/components/user-button";
 
 interface NavbarProps {
     editor: Editor | undefined;
@@ -169,7 +170,7 @@ export const Navbar = ({
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    {/* TODO: Add user-button */}
+                    <UserButton />
                 </div>
             </div>
         </nav>
