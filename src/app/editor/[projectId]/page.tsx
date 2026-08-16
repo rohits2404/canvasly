@@ -1,11 +1,15 @@
-import { protectServer } from "@/features/auth/utils";
-import { Editor } from "@/features/editor/components/editor";
-import React from "react";
+import { EditorProjectIdClient } from "@/features/editor";
 
-const EditorProjectIdPage = async () => {
-    await protectServer();
+interface EditorProjectIdPageProps {
+    params: Promise<{
+        projectId: string;
+    }>;
+}
 
-    return <Editor />;
+const EditorProjectIdPage = async ({ params }: EditorProjectIdPageProps) => {
+    const { projectId } = await params;
+
+    return <EditorProjectIdClient projectId={projectId} />;
 };
 
 export default EditorProjectIdPage;
