@@ -74,6 +74,48 @@ const app = new Hono()
 
             return c.json({ data: data[0] });
         },
+    )
+    .patch(
+        "/:id",
+        verifyAuth(),
+        zValidator("param", z.object({ id: z.string() })),
+        zValidator(
+            "json",
+            projectsInsertSchema
+                .omit({
+                    id: true,
+                    userId: true,
+                    createdAt: true,
+                    updatedAt: true,
+                })
+                .partial(),
+        ),
+        async (c) => {
+            const auth = c.get("authUser");
+            const { id } = c.req.valid("param");
+            const values = c.req.valid("json");
+
+            const userId = auth.token?.sub;
+
+            if (typeof userId !== "string") {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const data = await db
+                .update(projects)
+                .set({
+                    ...values,
+                    updatedAt: new Date(),
+                })
+                .where(and(eq(projects.id, id), eq(projects.userId, userId)))
+                .returning();
+
+            if (data.length === 0) {
+                return c.json({ error: "Not Found" }, 404);
+            }
+
+            return c.json({ data: data[0] });
+        },
     );
 
 export default app;

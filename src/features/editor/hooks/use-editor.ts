@@ -11,7 +11,7 @@ import {
     Textbox,
     Triangle,
 } from "fabric";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useAutoResize } from "./use-auto-resize";
 import {
     BuildEditorProps,
@@ -42,6 +42,7 @@ import { useClipboard } from "./use-clipboard";
 import { useHistory } from "./use-history";
 import { useHotkeys } from "./use-hotkeys";
 import { useWindowEvents } from "./use-window-events";
+import { useLoadState } from "./use-load-state";
 
 const buildEditor = ({
     save,
@@ -632,7 +633,17 @@ const buildEditor = ({
     };
 };
 
-export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
+export const useEditor = ({
+    defaultState,
+    defaultHeight,
+    defaultWidth,
+    clearSelectionCallback,
+    saveCallback,
+}: EditorHookProps) => {
+    const initialState = useRef(defaultState);
+    const initialWidth = useRef(defaultWidth);
+    const initialHeight = useRef(defaultHeight);
+
     const [canvas, setCanvas] = useState<Canvas | null>(null);
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
     const [selectedObjects, setSelectedObjects] = useState<FabricObject[]>([]);
@@ -654,7 +665,7 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         redo,
         canvasHistory,
         setHistoryIndex,
-    } = useHistory({ canvas });
+    } = useHistory({ canvas, saveCallback });
 
     const { copy, paste } = useClipboard({ canvas });
 
@@ -677,6 +688,14 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
         paste,
         save,
         canvas,
+    });
+
+    useLoadState({
+        canvas,
+        autoZoom,
+        initialState,
+        canvasHistory,
+        setHistoryIndex,
     });
 
     const editor = useMemo(() => {
@@ -743,8 +762,8 @@ export const useEditor = ({ clearSelectionCallback }: EditorHookProps) => {
             });
 
             const initialWorkspace = new Rect({
-                width: 900,
-                height: 1200,
+                width: initialWidth.current,
+                height: initialHeight.current,
                 name: "clip",
                 fill: "white",
                 selectable: false,
