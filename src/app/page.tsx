@@ -1,12 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
 import React from "react";
 
-const Home = () => {
-    return (
-        <div>
-            <Button size="sm">Click me</Button>
-        </div>
-    );
+const Home = async () => {
+    const session = await auth();
+
+    return <div>{JSON.stringify(session)}</div>;
 };
 
 export default Home;
