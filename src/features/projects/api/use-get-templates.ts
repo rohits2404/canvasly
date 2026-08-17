@@ -24,12 +24,18 @@ export const useGetTemplates = (apiQuery: RequestType) => {
                 query: apiQuery,
             });
 
+            console.log("TEMPLATE RESPONSE:", response);
+
             if (!response.ok) {
-                throw new Error("Failed to fetch templates");
+                throw new Error("Failed To Fetch Templates");
             }
 
-            const { data } = await response.json();
-            return data;
+            const result = await response.json();
+
+            console.log("TEMPLATE JSON:", result);
+            console.log("TEMPLATE DATA:", result.data);
+
+            return result.data;
         },
     });
 
