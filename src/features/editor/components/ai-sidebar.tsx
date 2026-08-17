@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ToolSidebarClose } from "./tool-sidebar-close";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 interface AiSidebarProps {
     editor: Editor | undefined;
@@ -19,11 +20,18 @@ export const AiSidebar = ({
     activeTool,
     onChangeActiveTool,
 }: AiSidebarProps) => {
+    const { shouldBlock, triggerPaywall } = usePaywall();
+
     const mutation = useGenerateImage();
 
     const [value, setValue] = useState("");
 
     const onSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+        if (shouldBlock) {
+            triggerPaywall();
+            return;
+        }
+
         e.preventDefault();
 
         mutation.mutate(

@@ -6,10 +6,11 @@ import {
 } from "@/features/projects/api/use-get-templates";
 import { cn } from "@/lib/utils";
 import { ToolSidebarHeader } from "./tool-sidebar-header";
-import { AlertTriangle, Loader } from "lucide-react";
+import { AlertTriangle, Crown, Loader } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { ToolSidebarClose } from "./tool-sidebar-close";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 interface TemplateSidebarProps {
     editor: Editor | undefined;
@@ -22,6 +23,8 @@ export const TemplateSidebar = ({
     activeTool,
     onChangeActiveTool,
 }: TemplateSidebarProps) => {
+    const { shouldBlock, triggerPaywall } = usePaywall();
+
     const [ConfirmDialog, confirm] = useConfirm(
         "Are You Sure?",
         "You Are About To Replace The Current Project With This Template.",
@@ -37,7 +40,10 @@ export const TemplateSidebar = ({
     };
 
     const onClick = async (template: ResponseType["data"][0]) => {
-        // TODO: Check if template is pro
+        if (template.isPro && shouldBlock) {
+            triggerPaywall();
+            return;
+        }
 
         const ok = await confirm();
 
@@ -79,7 +85,7 @@ export const TemplateSidebar = ({
                 <div className="p-4">
                     <div className="grid grid-cols-2 gap-4">
                         {data &&
-                            data.map((template) => {
+                            data?.map((template) => {
                                 return (
                                     <button
                                         style={{
@@ -102,6 +108,12 @@ export const TemplateSidebar = ({
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-muted text-xs text-muted-foreground">
                                                 No Preview
+                                            </div>
+                                        )}
+
+                                        {template.isPro && (
+                                            <div className="absolute top-2 right-2 size-8 flex items-center justify-center bg-black/50 rounded-full">
+                                                <Crown className="size-4 fill-yellow-500 text-yellow-500" />
                                             </div>
                                         )}
 

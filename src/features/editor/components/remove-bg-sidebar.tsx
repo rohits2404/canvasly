@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ToolSidebarClose } from "./tool-sidebar-close";
 import { FabricImage } from "fabric";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 
 interface RemoveBgSidebarProps {
     editor: Editor | undefined;
@@ -20,6 +21,8 @@ export const RemoveBgSidebar = ({
     activeTool,
     onChangeActiveTool,
 }: RemoveBgSidebarProps) => {
+    const { shouldBlock, triggerPaywall } = usePaywall();
+
     const mutation = useRemoveBg();
 
     const selectedObject = editor?.selectedObjects[0];
@@ -34,6 +37,11 @@ export const RemoveBgSidebar = ({
     };
 
     const onClick = () => {
+        if (shouldBlock) {
+            triggerPaywall();
+            return;
+        }
+
         if (!imageSrc) return;
 
         mutation.mutate(
